@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1WqqZv2a0RBmxKpOpyh8OC2MZkCtQN_v_
 
 ## Limpieza de los datos
-
+  
 A lo largo de este documento vamos a definir el workflow de limpieza de los datos obtenidos por las técnicas de scrapping en los notebooks anteriores, como mencionamos en la primera entrega el objetivo es presentar un Pipeline de KubeFlow deplegable, proponemos el formato de los siguientes notebooks como documentación de los procesos de cada pipeline a fin de facilitar las pruebas de dichos procesos y verificación de su funcionamiento correcto.
 """
 
@@ -19,16 +19,16 @@ import json
 from scipy import stats
 from statistics import mean
 
-"""Como estamos utilizando datos provenientes de 4 fuentes de información distintas, el primer paso debe ser unificar toda la información en un único conjunto de datos. Esto nos permitirá hacer una correcta exploración inicial de las características así como realizar la limpieza de datos faltantes (ya sea eliminandolos o rellenandolos) y la eliminación de valores atípicos.
+"""Como estamos utilizando datos provenientes de 3 fuentes de información distintas, el primer paso debe ser unificar toda la información en un único conjunto de datos. Esto nos permitirá hacer una correcta exploración inicial de las características así como realizar la limpieza de datos faltantes (ya sea eliminandolos o rellenandolos) y la eliminación de valores atípicos.
 
-A continuación mostramos como unificamos la información extraida de **Century 21** y **Mudafy** en un solo conjunto de datos. En un futuro agregaremos propiedades provenientes de dos sitios web adicionales.
+A continuación mostramos como unificamos la información extraida de **Century 21**, **Mudafy** y **Lamudi** en un solo conjunto de datos.
 
 Importamos los datos correspondientes de **Century 21**, estos son importados desde un archivo JSON
 """
 
-df_century21= pl.read_json("DatosOmar.json")
+df_century21= pl.read_json("Data/DatosOmar.json")
 
-with open("DatosOmar.json", "r") as f:
+with open("Data/DatosOmar.json", "r") as f:
     data = json.load(f)
 
 """Creamos el dataframe entrando al diccionario del JSON, tomamos la llave y creamos una columna con sus valores y colocando como nombre la llave."""
@@ -38,6 +38,22 @@ for key in data.keys():
     df = pl.from_dict(data[key]).transpose()
     df.columns = [key]
     datos_omar.append(df)
+
+
+"""Importamos los datos de **Lamudi** ahora"""
+df_lamudi = pl.read_json("Data/DatosMauricio.json")
+
+with open("Data/DatosMauricio.json","r") as f:
+    data = json.load(f)
+
+
+datos_mauricio = []
+
+for key in data.keys():
+    df = pl.from_dict(data[key])
+    df.columns = [key]
+    datos_mauricio.append(df)
+
 
 """Importamos los datos correspondientes de **Mudafy**"""
 
